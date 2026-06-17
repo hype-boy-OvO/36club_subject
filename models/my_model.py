@@ -23,7 +23,8 @@ class My_Model(Main_Model):
         # Data Collator가 만든 -100(마스킹 안 된 곳)을 제외하고 문장별 평균 loss 구하기
         mask = (labels != -100).float()  # 마스킹된 타겟 토큰 위치는 1, 아니면 0 (batch_size, seq_len)
         
-        actual_loss = (token_loss * mask)   # 문장별 실제 MLM 손실의 합 (batch_size,)
+        actual_loss = (token_loss * mask)
+        actual_loss = actual_loss / (mask.sum() + 1e-9)   # 문장별 실제 MLM 손실의 합 (batch_size,)
         
         # 최종 문장 레벨의 실제 손실 (차원: batch_size,)
         
